@@ -1,0 +1,58 @@
+﻿using AM.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+
+namespace AM.API.Setup;
+
+internal static class ApiConfigurator
+{
+    private const string AllowForFrontend = "AllowForFrontend";
+
+    public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddOpenApi();
+        builder.Services.AddControllers();
+
+        var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddRepositories(connection);
+
+        var frontednUrl = builder.Configuration["CORS:FrontendUrl"]!;
+        builder.Services.AddCors(options => {
+            options.AddPolicy(AllowForFrontend, policy => {
+                policy.WithOrigins(frontednUrl)
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+
+        return builder;
+    }
+
+    public static WebApplication PiplineSetup(this WebApplication app)
+    {
+        //if (app.Environment.IsDevelopment())
+        //{
+        //    app.UseSwagger();
+        //    app.UseSwaggerUI();
+        //}
+
+        app.EnsureDbMigration();
+
+        app.UseHttpsRedirection();
+        app.UseCors(AllowForFrontend);
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        return app;
+    }
+
+    private static void EnsureDbMigration(this WebApplication app)
+    {
+        using IServiceScope serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+        var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+        context?.Database.Migrate();
+    }
+}

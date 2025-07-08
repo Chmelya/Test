@@ -1,0 +1,23 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    hostname: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${SQL_PASSWORD}
+      - MSSQL_DATABASE=${SQL_DB_NAME}
+    ports:
+      - '4000:1433'
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "/opt/mssql-tools18/bin/sqlcmd -U sa -P ${SQL_PASSWORD} -Q 'SELECT 1' -C || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  sqlserver-data:
