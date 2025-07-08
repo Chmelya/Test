@@ -29,12 +29,6 @@ internal static class ApiConfigurator
 
     public static WebApplication PiplineSetup(this WebApplication app)
     {
-        //if (app.Environment.IsDevelopment())
-        //{
-        //    app.UseSwagger();
-        //    app.UseSwaggerUI();
-        //}
-
         app.EnsureDbMigration();
 
         app.UseHttpsRedirection();

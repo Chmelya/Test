@@ -1,6 +1,7 @@
 ﻿using AM.Domain.Enities;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Reflection;
 
 namespace AM.Infrastructure
 {
@@ -10,6 +11,8 @@ namespace AM.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
             base.OnModelCreating(modelBuilder);
         }
 

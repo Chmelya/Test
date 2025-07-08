@@ -1,16 +1,24 @@
 ﻿using AM.Application.Common.Interfaces.Repositories;
 using AM.Domain.Enities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace AM.Infrastructure.Repositories;
 
-public abstract class BaseRepository<TEntity>(ApplicationDbContext context) : IBaseRepository<TEntity>
+public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity>
     where TEntity : Entity
 {
+    private readonly ApplicationDbContext _context;
+
+    protected BaseRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    protected ApplicationDbContext Context => _context;
+
     protected DbSet<TEntity> Get(bool isAsNoTracking = false)
     {
-        DbSet<TEntity> dbSet = context.Set<TEntity>();
+        DbSet<TEntity> dbSet = Context.Set<TEntity>();
 
         if (isAsNoTracking)
         {

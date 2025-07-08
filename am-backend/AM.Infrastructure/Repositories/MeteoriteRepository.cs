@@ -11,7 +11,7 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
         var meteoritesDict = incomingEntities.ToDictionary(_ => _.Name);
         var existingIds = meteoritesDict.Keys.ToList();
 
-        var dbSet = context.Meteorites;
+        var dbSet = Context.Meteorites;
 
         var existingRecords = await dbSet
             .Where(_ => existingIds.Contains(_.Name))
@@ -24,7 +24,7 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
             var existing = existingRecords.FirstOrDefault(m => m.Id == meteorite.Id);
             if (existing != null)
             {
-                context.Entry(existing).CurrentValues.SetValues(meteorite);
+                Context.Entry(existing).CurrentValues.SetValues(meteorite);
             }
             else
             {
@@ -37,6 +37,6 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
             await dbSet.AddRangeAsync(toAdd);
         }
 
-        await context.SaveChangesAsync();
+        await Context.SaveChangesAsync();
     }
 }
