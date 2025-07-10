@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.Configure<JobsSettings>(builder.Configuration.GetSection("JobsSettings"));
 builder.Services.AddScoped<IMeteoriteRepository, MeteoriteRepository>();
+builder.Services.AddScoped<IGeolocationRepository, GeolocationRepository>();
 
 builder.Services
     .AddHttpClient<IMeteoriteFetchService, MeteoriteFetchService>(client =>

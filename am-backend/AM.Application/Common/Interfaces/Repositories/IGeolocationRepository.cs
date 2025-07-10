@@ -2,6 +2,6 @@
 
 namespace AM.Application.Common.Interfaces.Repositories;
 
-public interface IMeteoriteRepository : IBaseRepository<Meteorite>
+public interface IGeolocationRepository : IBaseRepository<Geolocation>
 {
 }

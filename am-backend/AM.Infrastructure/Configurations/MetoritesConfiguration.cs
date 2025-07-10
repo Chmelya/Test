@@ -8,9 +8,11 @@ public class MetoritesConfiguration : IEntityTypeConfiguration<Meteorite>
 {
     public void Configure(EntityTypeBuilder<Meteorite> builder)
     {
-        //builder
-        //    .HasIndex(m => m.Name)
-        //    .IsUnique();
+
+        builder
+            .Property(m => m.Id)
+            .ValueGeneratedNever(); 
+        
 
         builder
             .HasOne(m => m.Geolocation)

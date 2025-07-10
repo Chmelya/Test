@@ -1,4 +1,6 @@
-﻿namespace AM.Domain.Enities;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace AM.Domain.Enities;
 
 public  class Geolocation : Entity
 {

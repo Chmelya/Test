@@ -16,7 +16,7 @@ public class MeteortiresRefreshJob(
     public Task StartAsync(CancellationToken stoppingToken)
     {
     //    logger.LogInformation("{Service} is running.", nameof(MeteortiresRefreshJob));
-        _timer = new Timer(DoWorkAsync, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+        _timer = new Timer(DoWorkAsync, null, TimeSpan.Zero, TimeSpan.FromSeconds(1000));
 
         return _completedTask;
     }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AM.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250708202421_InitialCreate")]
+    [Migration("20250710211439_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -55,10 +55,7 @@ namespace AM.Infrastructure.Migrations
             modelBuilder.Entity("AM.Domain.Enities.Meteorite", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Fall")
                         .IsRequired()
@@ -106,8 +103,7 @@ namespace AM.Infrastructure.Migrations
 
             modelBuilder.Entity("AM.Domain.Enities.Meteorite", b =>
                 {
-                    b.Navigation("Geolocation")
-                        .IsRequired();
+                    b.Navigation("Geolocation");
                 });
 #pragma warning restore 612, 618
         }

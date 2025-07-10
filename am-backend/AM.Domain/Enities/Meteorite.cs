@@ -4,17 +4,15 @@ public class Meteorite : Entity
 {
     public string Name { get; set; }
 
-
     //TODO: To enum
     public string NameType { get; set; }
-
 
     //TODO: To enum
     public string Recclass { get; set; }
 
     public double Mass { get; set; }
 
-    //TODO: To enum
+    //TODO: To bool
     public string Fall { get; set; }
 
     public DateTime Year { get; set; }
@@ -23,5 +21,5 @@ public class Meteorite : Entity
 
     public double Reclong { get; set; }
 
-    public Geolocation Geolocation { get; set; }
+    public Geolocation? Geolocation { get; set; }
 }

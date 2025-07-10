@@ -15,14 +15,14 @@ internal static class ApiConfigurator
         var connection = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddRepositories(connection);
 
-        var frontednUrl = builder.Configuration["CORS:FrontendUrl"]!;
-        builder.Services.AddCors(options => {
-            options.AddPolicy(AllowForFrontend, policy => {
-                policy.WithOrigins(frontednUrl)
-                      .AllowAnyMethod()
-                      .AllowAnyHeader();
-            });
-        });
+        //var frontednUrl = builder.Configuration["CORS:FrontendUrl"]!;
+        //builder.Services.AddCors(options => {
+        //    options.AddPolicy(AllowForFrontend, policy => {
+        //        policy.WithOrigins(frontednUrl)
+        //              .AllowAnyMethod()
+        //              .AllowAnyHeader();
+        //    });
+        //});
 
         return builder;
     }

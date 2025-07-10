@@ -52,10 +52,7 @@ namespace AM.Infrastructure.Migrations
             modelBuilder.Entity("AM.Domain.Enities.Meteorite", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Fall")
                         .IsRequired()
@@ -103,8 +100,7 @@ namespace AM.Infrastructure.Migrations
 
             modelBuilder.Entity("AM.Domain.Enities.Meteorite", b =>
                 {
-                    b.Navigation("Geolocation")
-                        .IsRequired();
+                    b.Navigation("Geolocation");
                 });
 #pragma warning restore 612, 618
         }

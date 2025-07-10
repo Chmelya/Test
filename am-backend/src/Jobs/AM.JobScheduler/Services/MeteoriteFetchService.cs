@@ -7,7 +7,8 @@ namespace AM.JobScheduler.Services
 {
     public class MeteoriteFetchService(
         HttpClient httpClient,
-        IMeteoriteRepository meteoriteRepository)
+        IMeteoriteRepository meteoriteRepository,
+        IGeolocationRepository geolocationRepository)
         : IMeteoriteFetchService
     {
         public async Task FetchMeteorites()
@@ -15,8 +16,35 @@ namespace AM.JobScheduler.Services
             try
             {
                 //TODO : To config
-                var response = await httpClient.GetFromJsonAsync<IList<Meteorite>>("https://raw.githubusercontent.com/biggiko/nasa-dataset/refs/heads/main/y77d-th95.json");
-                await meteoriteRepository.BulkInsertAsync(response);
+                var meteorites = await httpClient.GetFromJsonAsync<IList<Meteorite>>("https://raw.githubusercontent.com/biggiko/nasa-dataset/refs/heads/main/y77d-th95.json");
+                if (meteorites is null)
+                {
+                    return;
+                }
+
+                await meteoriteRepository.BulkInsertOrUpdateAsync(meteorites, config =>
+                {
+                    config.BatchSize = 1000;
+                    config.SetOutputIdentity = false;
+                });
+
+                var geolocations = meteorites
+                    .Where(m => m.Geolocation != null)
+                    .Select(m =>
+                    {
+                        m.Geolocation!.MeteoriteId = m.Id;
+                        return m.Geolocation;
+                    })
+                    .ToList();
+
+                await geolocationRepository.BulkInsertOrUpdateAsync(geolocations, config =>
+                {
+                    config.BatchSize = 1000;
+                    config.UpdateByProperties =
+                    [
+                        nameof(Geolocation.MeteoriteId)
+                    ];
+                });
             }
 
             catch (HttpRequestException ex)
