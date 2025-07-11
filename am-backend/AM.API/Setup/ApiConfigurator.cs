@@ -12,6 +12,9 @@ internal static class ApiConfigurator
         builder.Services.AddOpenApi();
         builder.Services.AddControllers();
 
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
         var connection = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddRepositories(connection);
 

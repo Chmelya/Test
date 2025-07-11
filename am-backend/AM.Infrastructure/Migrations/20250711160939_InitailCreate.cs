@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace AM.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitailCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +20,7 @@ namespace AM.Infrastructure.Migrations
                     Recclass = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Mass = table.Column<double>(type: "float", nullable: false),
                     Fall = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Year = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
                     Reclat = table.Column<double>(type: "float", nullable: false),
                     Reclong = table.Column<double>(type: "float", nullable: false)
                 },

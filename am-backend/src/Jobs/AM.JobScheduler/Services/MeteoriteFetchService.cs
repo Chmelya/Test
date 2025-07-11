@@ -1,5 +1,6 @@
 ﻿using AM.Application.Common.Interfaces.Repositories;
 using AM.Domain.Enities;
+using AM.JobScheduler.DTO;
 using AM.JobScheduler.Interfaces;
 using System.Text.Json;
 
@@ -16,11 +17,35 @@ namespace AM.JobScheduler.Services
             try
             {
                 //TODO : To config
-                var meteorites = await httpClient.GetFromJsonAsync<IList<Meteorite>>("https://raw.githubusercontent.com/biggiko/nasa-dataset/refs/heads/main/y77d-th95.json");
-                if (meteorites is null)
+                var meteoritesDto = await httpClient.GetFromJsonAsync<List<MeteoriteDto>>("https://raw.githubusercontent.com/biggiko/nasa-dataset/refs/heads/main/y77d-th95.json");
+                if (meteoritesDto is null)
                 {
                     return;
                 }
+
+                var meteorites = meteoritesDto.Select(dto =>
+                {
+                    var meteorite = new Meteorite();
+
+                    foreach (var prop in typeof(Meteorite).GetProperties())
+                    {
+                        if(prop.Name == nameof(Meteorite.Year))
+                        {
+                            continue;
+                        }
+
+                        var dtoProp = typeof(MeteoriteDto).GetProperty(prop.Name);
+                        if (dtoProp != null && prop.CanWrite)
+                        {
+                            var value = dtoProp.GetValue(dto);
+                            prop.SetValue(meteorite, value);
+                        }
+                    }
+
+                    meteorite.Year = dto.Year.Year;
+
+                    return meteorite;
+                }).ToList();
 
                 await meteoriteRepository.BulkInsertOrUpdateAsync(meteorites, config =>
                 {
