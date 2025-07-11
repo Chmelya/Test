@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="EFCore.BulkExtensions" Version="9.0.1" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\AM.Domain\AM.Domain.csproj" />
   </ItemGroup>
 </Project>

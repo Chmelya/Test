@@ -15,7 +15,7 @@ public class Meteorite : Entity
     //TODO: To bool
     public string Fall { get; set; }
 
-    public DateTime Year { get; set; }
+    public int Year { get; set; }
 
     public double Reclat { get; set; }
 
