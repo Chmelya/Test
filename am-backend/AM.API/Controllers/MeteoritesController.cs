@@ -6,6 +6,7 @@ namespace AM.API.Controllers;
 
 public class MeteoritesController(IMeteortiesService meteortiesService) : ApiController
 {
+    [HttpGet("GroupedByYear")]
     public async Task<IActionResult> GetMetoritesGroupedList(
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,

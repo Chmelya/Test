@@ -24,7 +24,7 @@ namespace AM.Application.Services
             }
             catch (Exception)
             {
-                throw new InvalidOperationException("Error during fetching service requests");
+                throw new InvalidOperationException("Error during fetching meteorites");
             }
         }
     } 

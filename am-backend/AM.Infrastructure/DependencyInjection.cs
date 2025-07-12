@@ -15,5 +15,6 @@ public static class DependencyInjection
                         .UseSqlServer(connection));
 
         services.AddScoped<IMeteoriteRepository, MeteoriteRepository>();
+        services.AddScoped<IGeolocationRepository, GeolocationRepository>();
     }
 }

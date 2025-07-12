@@ -1,4 +1,5 @@
-﻿using AM.Infrastructure;
+﻿using AM.Application;
+using AM.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace AM.API.Setup;
@@ -16,7 +17,9 @@ internal static class ApiConfigurator
         builder.Services.AddSwaggerGen();
 
         var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
         builder.Services.AddRepositories(connection);
+        builder.Services.AddServices();
 
         //var frontednUrl = builder.Configuration["CORS:FrontendUrl"]!;
         //builder.Services.AddCors(options => {
@@ -41,6 +44,9 @@ internal static class ApiConfigurator
         app.UseAuthorization();
 
         app.MapControllers();
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
         return app;
     }

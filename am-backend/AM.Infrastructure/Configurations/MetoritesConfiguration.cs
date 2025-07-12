@@ -13,10 +13,10 @@ public class MetoritesConfiguration : IEntityTypeConfiguration<Meteorite>
             .Property(m => m.Id)
             .ValueGeneratedNever(); 
         
-
         builder
             .HasOne(m => m.Geolocation)
             .WithOne(g => g.Meteorite)
             .HasForeignKey<Geolocation>(g => g.MeteoriteId);
+
     }
 }

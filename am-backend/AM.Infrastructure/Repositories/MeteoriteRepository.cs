@@ -17,7 +17,7 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
     {
         var query = GetAsSplitable(isAsNoTracking);
 
-        query = ApplyFilters(query, filter);
+        query = FilterQuery(query, filter);
 
         var responseQuery = query
             .GroupBy(x => x.Year)
@@ -25,23 +25,18 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
             {
                 Year = g.Key,
                 TotalMass = g.Sum(x => x.Mass),
-                MeteoritesCount = g.Count()
+                MeteoritesCount = g.Count(),
+                Meteorites = g.ToList(),
             });
+
+
+        var orderSelector = GetOrderSelector(filter.SortColumn);
+
+        responseQuery = ApplySort(responseQuery, filter.SortOrder, orderSelector);
 
         var pagedList = await responseQuery.ToPagedListAsync(filter.PageNumber, filter.PageSize);
 
         return pagedList;
-    }
-
-    private static IQueryable<Meteorite> ApplyFilters(IQueryable<Meteorite> query, MeteoritesSearchFilter filter)
-    {
-        query = FilterQuery(query, filter);
-
-        var orderSelector = GetOrderSelector(filter.SortColumn);
-
-        query = ApplySort(query, filter.SortOrder, orderSelector);
-
-        return query;
     }
 
     private static IQueryable<Meteorite> FilterQuery(IQueryable<Meteorite> query, MeteoritesSearchFilter filter)
@@ -70,21 +65,21 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
     }
 
 
-    private static Expression<Func<Meteorite, object>> GetOrderSelector(string? sortColumn)
+    private static Expression<Func<MeteoritesGropedResponse, object>> GetOrderSelector(string? sortColumn)
     {
         var propertyName = string.IsNullOrEmpty(sortColumn)
-            ? nameof(Meteorite.Name)
+            ? nameof(MeteoritesGropedResponse.Year)
             : sortColumn;
 
-        var param = Expression.Parameter(typeof(Meteorite));
-        return Expression.Lambda<Func<Meteorite, object>>(
+        var param = Expression.Parameter(typeof(MeteoritesGropedResponse));
+        return Expression.Lambda<Func<MeteoritesGropedResponse, object>>(
             Expression.Convert(Expression.Property(param, propertyName), typeof(object)),
             param);
     }
 
-    private static IQueryable<Meteorite> ApplySort(
-        IQueryable<Meteorite> query, string? sortOrder,
-        Expression<Func<Meteorite, object>> orderSelector)
+    private static IQueryable<MeteoritesGropedResponse> ApplySort(
+        IQueryable<MeteoritesGropedResponse> query, string? sortOrder,
+        Expression<Func<MeteoritesGropedResponse, object>> orderSelector)
     {
         return (sortOrder?.ToUpperInvariant() ?? "ASC") == "DESC"
             ? query.OrderByDescending(orderSelector)
