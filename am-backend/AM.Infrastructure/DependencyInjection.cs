@@ -1,5 +1,6 @@
 ﻿using AM.Application.Common.Interfaces.Repositories;
 using AM.Infrastructure.Repositories;
+using AM.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,5 +17,8 @@ public static class DependencyInjection
 
         services.AddScoped<IMeteoriteRepository, MeteoriteRepository>();
         services.AddScoped<IGeolocationRepository, GeolocationRepository>();
+        services.AddScoped<IRecclassRepository, RecclassRepository>();
+
+        services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
     }
 }

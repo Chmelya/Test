@@ -7,8 +7,10 @@ public class Meteorite : Entity
     //TODO: To enum
     public string NameType { get; set; }
 
+    public int RecclassId { get; set; }
+
     //TODO: To enum
-    public string Recclass { get; set; }
+    public Recclass Recclass { get; set; }
 
     public double Mass { get; set; }
 

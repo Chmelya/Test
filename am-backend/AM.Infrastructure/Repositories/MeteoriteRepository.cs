@@ -2,6 +2,7 @@
 using AM.Application.Common.Interfaces.Repositories;
 using AM.Application.Common.Responses;
 using AM.Domain.Enities;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using X.PagedList;
 using X.PagedList.EF;
@@ -15,11 +16,12 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
         MeteoritesSearchFilter filter,
         bool isAsNoTracking = false)
     {
-        var query = GetAsSplitable(isAsNoTracking);
+        var query = GetAsSplitable(isAsNoTracking); 
 
         query = FilterQuery(query, filter);
 
         var responseQuery = query
+            .Include(m => m.Recclass)
             .GroupBy(x => x.Year)
             .Select(g => new MeteoritesGropedResponse()
             {
@@ -53,7 +55,7 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
 
         if (filter.Recclass is not null)
         {
-            query = query.Where(m => m.Recclass == filter.Recclass);
+            query = query.Where(m => m.RecclassId == filter.Recclass);
         }
 
         if (filter.NamePart is not null)

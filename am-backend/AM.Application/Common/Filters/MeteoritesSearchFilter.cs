@@ -10,7 +10,7 @@
 
         public int? EndYear { get; set; }
 
-        public string? Recclass { get; set; }
+        public int? Recclass { get; set; }
 
         public string? NamePart { get; set; }
 

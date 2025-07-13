@@ -1,7 +1,9 @@
 ﻿namespace AM.JobScheduler
 {
-    internal class JobsSettings
+    public class JobsSettings
     {
-        public string MeteoritesFetchCron { get; set; } = "* * */1 * *";
+        public int MeteoritesFetchInSeconds { get; set; } = 3600;
+
+        public string MeteoritesDatasetUrl { get; set; } = string.Empty;
     }
 }

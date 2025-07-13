@@ -1,6 +1,4 @@
-using AM.Application.Common.Interfaces.Repositories;
 using AM.Infrastructure;
-using AM.Infrastructure.Repositories;
 using AM.JobScheduler;
 using AM.JobScheduler.Interfaces;
 using AM.JobScheduler.Services;
@@ -10,12 +8,9 @@ using Polly.Extensions.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.Configure<JobsSettings>(builder.Configuration.GetSection("JobsSettings"));
-builder.Services.AddScoped<IMeteoriteRepository, MeteoriteRepository>();
-builder.Services.AddScoped<IGeolocationRepository, GeolocationRepository>();
+
+builder.Services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 builder.Services
     .AddHttpClient<IMeteoriteFetchService, MeteoriteFetchService>(client =>

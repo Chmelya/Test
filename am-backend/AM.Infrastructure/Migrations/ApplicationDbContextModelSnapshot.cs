@@ -62,15 +62,14 @@ namespace AM.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NameType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Recclass")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RecclassId")
+                        .HasColumnType("int");
 
                     b.Property<double>("Reclat")
                         .HasColumnType("float");
@@ -83,7 +82,33 @@ namespace AM.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name");
+
+                    b.HasIndex("RecclassId");
+
+                    b.HasIndex("Year");
+
                     b.ToTable("Meteorites");
+                });
+
+            modelBuilder.Entity("AM.Domain.Enities.Recclass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Recclass");
                 });
 
             modelBuilder.Entity("AM.Domain.Enities.Geolocation", b =>
@@ -95,6 +120,17 @@ namespace AM.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Meteorite");
+                });
+
+            modelBuilder.Entity("AM.Domain.Enities.Meteorite", b =>
+                {
+                    b.HasOne("AM.Domain.Enities.Recclass", "Recclass")
+                        .WithMany()
+                        .HasForeignKey("RecclassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recclass");
                 });
 
             modelBuilder.Entity("AM.Domain.Enities.Meteorite", b =>

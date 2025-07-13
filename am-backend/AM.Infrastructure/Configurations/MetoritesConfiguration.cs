@@ -4,15 +4,21 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AM.Infrastructure.Configurations;
 
-public class MetoritesConfiguration : IEntityTypeConfiguration<Meteorite>
+internal class MetoritesConfiguration : IEntityTypeConfiguration<Meteorite>
 {
     public void Configure(EntityTypeBuilder<Meteorite> builder)
     {
 
         builder
             .Property(m => m.Id)
-            .ValueGeneratedNever(); 
-        
+            .ValueGeneratedNever();
+
+        builder
+            .HasIndex(m => m.Year);
+
+        builder
+            .HasIndex(m => m.Name);
+
         builder
             .HasOne(m => m.Geolocation)
             .WithOne(g => g.Meteorite)

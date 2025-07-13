@@ -8,9 +8,27 @@ using ErrorOr;
 
 namespace AM.Application.Services
 {
-    public class MeteortiesService(IMeteoriteRepository meteoriteRepository) : IMeteortiesService
+    public class MeteortiesService(
+        IMeteoriteRepository meteoriteRepository,
+        IRecclassRepository recclassRepository
+        ) : IMeteortiesService
     {
-        public async Task<ErrorOr<PagedListResponse<MeteoritesGropedResponse>>>  GetMeteoritesGrouped(MeteoritesSearchFilter filter)
+        public async Task<ErrorOr<List<DropdownResponse>>> GetRecclasses()
+        {
+            try
+            {
+                return (await recclassRepository
+                    .GetAllAsListAsync())
+                    .Select(r => new DropdownResponse { Id = r.Id, Value = r.Name})
+                    .ToList();
+            }
+            catch
+            {
+                throw new InvalidOperationException("Error during fetching recclasess");
+            }
+        }
+
+        public async Task<ErrorOr<PagedListResponse<MeteoritesGropedResponse>>> GetMeteoritesGrouped(MeteoritesSearchFilter filter)
         {
             try
             {
@@ -18,7 +36,7 @@ namespace AM.Application.Services
                 var list = (await meteoriteRepository
                     .GetGroupedByYearPagedAsync(filter))
                     .ToPagedResponse();
-                
+
                 return list;
 
             }
@@ -27,5 +45,5 @@ namespace AM.Application.Services
                 throw new InvalidOperationException("Error during fetching meteorites");
             }
         }
-    } 
+    }
 }

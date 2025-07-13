@@ -4,7 +4,6 @@ using AM.JobScheduler.Interfaces;
 namespace AM.JobScheduler.Services;
 
 public class MeteortiresRefreshJob(
-      //ILogger<MeteortiresRefreshJob> logger,
       IServiceProvider services
     )
     : IHostedService, IAsyncDisposable
@@ -15,7 +14,6 @@ public class MeteortiresRefreshJob(
 
     public Task StartAsync(CancellationToken stoppingToken)
     {
-    //    logger.LogInformation("{Service} is running.", nameof(MeteortiresRefreshJob));
         _timer = new Timer(DoWorkAsync, null, TimeSpan.Zero, TimeSpan.FromSeconds(1000));
 
         return _completedTask;
@@ -24,10 +22,7 @@ public class MeteortiresRefreshJob(
     private async void DoWorkAsync(object? state)
     {
         int count = Interlocked.Increment(ref _executionCount);
-        //logger.LogInformation(
-        //    "{Service} is working, execution count: {Count:#,0}",
-        //    nameof(MeteortiresRefreshJob),
-        //    count);
+
         await using var scope = services.CreateAsyncScope();
         var meteoriteFetchService = scope.ServiceProvider
             .GetRequiredService<IMeteoriteFetchService>();
@@ -37,8 +32,6 @@ public class MeteortiresRefreshJob(
 
     public Task StopAsync(CancellationToken stoppingToken)
     {
-        //logger.LogInformation(
-        //    "{Service} is stopping.", nameof(MeteortiresRefreshJob));
         _timer?.Change(Timeout.Infinite, 0);
 
         return _completedTask;
