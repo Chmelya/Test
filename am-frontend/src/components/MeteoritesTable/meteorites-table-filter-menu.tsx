@@ -3,7 +3,6 @@ import {
 	Button,
 	FormControl,
 	IconButton,
-	InputLabel,
 	Menu,
 	MenuItem,
 	Select,
@@ -14,6 +13,8 @@ import {
 import { useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import type { MeteoriteSearchFilter } from '../../models/requests/meteorites-request';
+import MeteoritesService from '../../api/services/meteoritesService';
+import { useQuery } from '@tanstack/react-query';
 
 const FilterMenu = ({
 	filter,
@@ -22,7 +23,9 @@ const FilterMenu = ({
 	filter: MeteoriteSearchFilter;
 	setFilter: React.Dispatch<React.SetStateAction<MeteoriteSearchFilter>>;
 }) => {
-	const [recclass, setRecclass] = useState<string>(filter.recclass || '');
+	const [recclass, setRecclass] = useState<string>(
+		filter.recclass?.toString() || '0'
+	);
 	const [name, setName] = useState<string>(filter.namePart || '');
 	const [fromYear, setFromYear] = useState<string>(
 		filter.startYear?.toString() || ''
@@ -45,7 +48,7 @@ const FilterMenu = ({
 	const applyHandler = () => {
 		setFilter((prev) => ({
 			...prev,
-			recclass: recclass || undefined,
+			recclass: parseInt(recclass) || undefined,
 			namePart: name || undefined,
 			startYear: fromYear ? parseInt(fromYear) : undefined,
 			endYear: toYear ? parseInt(toYear) : undefined,
@@ -54,7 +57,7 @@ const FilterMenu = ({
 	};
 
 	const resetHandler = () => {
-		setRecclass('');
+		setRecclass('0');
 		setName('');
 		setFromYear('');
 		setToYear('');
@@ -67,6 +70,16 @@ const FilterMenu = ({
 		}));
 		handleClose();
 	};
+
+	const { data: recclasses } = useQuery({
+		queryKey: ['meteorites', 'getRecclassesDropDown'],
+		queryFn: MeteoritesService.getRecclassesDropDown,
+	});
+
+	//TODO: loader
+	if (!recclasses) {
+		return <></>;
+	}
 
 	return (
 		<>
@@ -84,12 +97,14 @@ const FilterMenu = ({
 								id='recclass-select-ID'
 								value={recclass}
 								label='Recclass'
-								onChange={(event) => setRecclass(event.target.value)}
+								onChange={(event) => setRecclass(event.target.value.toString())}
 							>
-								<MenuItem value={''}>All</MenuItem>
-								<MenuItem value={'L5'}>L5</MenuItem>
-								<MenuItem value={'H4'}>H4</MenuItem>
-								<MenuItem value={'LL6'}>LL6</MenuItem>
+								<MenuItem value={'0'}>All</MenuItem>
+								{recclasses.map((r) => (
+									<MenuItem key={r.id} value={r.id}>
+										{r.value}
+									</MenuItem>
+								))}
 							</Select>
 							<TextField
 								id='field-name-id'

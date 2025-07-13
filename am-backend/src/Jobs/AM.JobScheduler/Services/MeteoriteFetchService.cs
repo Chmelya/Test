@@ -36,6 +36,7 @@ namespace AM.JobScheduler.Services
                 var recclassesToWrite = meteoritesDto
                     .Select(m => m.Recclass)
                     .Distinct()
+                    .OrderBy(m => m)
                     .Select(recclass => new Recclass { Name = recclass });
 
                 unitOfWork.BeginTransaction();

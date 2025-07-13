@@ -32,12 +32,16 @@ internal static class ApiConfigurator
             });
         });
 
+        builder.Services.AddResponseCaching();
+
         return builder;
     }
 
     public static WebApplication PiplineSetup(this WebApplication app)
     {
         app.EnsureDbMigration();
+
+        app.UseResponseCaching();
 
         app.UseHttpsRedirection();
         app.UseCors(AllowForFrontend);

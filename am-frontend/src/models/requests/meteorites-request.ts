@@ -1,8 +1,8 @@
 import type { PaginatedRequestParams } from './requests';
 
-export interface MeteoriteFilter extends PaginatedRequestParams {
+export interface MeteoriteSearchFilter extends PaginatedRequestParams {
 	startYear?: number;
 	endYear?: number;
-	recclass?: string;
+	recclass?: number;
 	namePart?: string;
 }

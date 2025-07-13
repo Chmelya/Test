@@ -7,6 +7,7 @@ namespace AM.API.Controllers;
 public class MeteoritesController(IMeteortiesService meteortiesService) : ApiController
 {
     [HttpGet("GroupedByYear")]
+    [ResponseCache(Duration = 3600)]
     public async Task<IActionResult> GetMetoritesGroupedList(
         [FromQuery] MeteoritesSearchFilter filter)
     {
@@ -16,6 +17,7 @@ public class MeteoritesController(IMeteortiesService meteortiesService) : ApiCon
     }
 
     [HttpGet("Options/Recclasses")]
+    [ResponseCache(Duration = 3600)]
     public async Task<IActionResult> GetMetoritesGroupedList()
     {
         var result = await meteortiesService.GetRecclasses();

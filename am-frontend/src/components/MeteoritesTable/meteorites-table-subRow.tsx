@@ -48,7 +48,7 @@ export default function SubRow({ row }: { row: MeteoritesByYear }) {
 									{row.meteorites.map((meteorite) => (
 										<TableRow>
 											<TableCell>{meteorite.name}</TableCell>
-											<TableCell>{meteorite.recclass}</TableCell>
+											<TableCell>{meteorite.recclass.name}</TableCell>
 											<TableCell align='right'>{meteorite.mass}</TableCell>
 										</TableRow>
 									))}

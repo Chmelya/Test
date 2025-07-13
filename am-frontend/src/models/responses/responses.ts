@@ -4,3 +4,8 @@ export interface PaginatedResponse<T> {
 	pageNumber: number;
 	totalCount: number;
 }
+
+export interface DropDownValue {
+	id: number;
+	value: string;
+}

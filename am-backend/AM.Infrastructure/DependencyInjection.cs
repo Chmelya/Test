@@ -1,6 +1,7 @@
 ﻿using AM.Application.Common.Interfaces.Repositories;
 using AM.Infrastructure.Repositories;
 using AM.Infrastructure.UnitOfWork;
+using EFCoreSecondLevelCacheInterceptor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,5 +21,13 @@ public static class DependencyInjection
         services.AddScoped<IRecclassRepository, RecclassRepository>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+
+        services.AddEFSecondLevelCache(options =>
+        {
+            options.UseMemoryCacheProvider()
+                   .UseCacheKeyPrefix("EF_");
+
+            options.CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30));
+        });
     }
 }
