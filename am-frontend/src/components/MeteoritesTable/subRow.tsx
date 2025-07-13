@@ -1,55 +1,19 @@
 import {
 	Box,
 	Collapse,
-	Paper,
+	IconButton,
 	Table,
 	TableBody,
 	TableCell,
-	TableContainer,
 	TableHead,
 	TableRow,
-	Typography,
 } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import MeteoritesService from '../api/services/meteoritesService';
 import React from 'react';
-import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import type MeteoritesByYear from '../models/meteoritesByYear';
+import type MeteoritesByYear from '../../models/meteoritesByYear';
 
-export default function MeteoritesTable() {
-	const { data: rowsPerYear } = useQuery({
-		queryKey: ['meteorites', 'getMeteoritesPerYear'],
-		queryFn: MeteoritesService.getMeteoritesPerYear,
-	});
-
-	if (!rowsPerYear) {
-		return <div>LOAD</div>;
-	}
-
-	return (
-		<TableContainer component={Paper}>
-			<Table aria-label='collapsible table'>
-				<TableHead>
-					<TableRow>
-						<TableCell />
-						<TableCell>Year</TableCell>
-						<TableCell align='right'>Total mass</TableCell>
-						<TableCell align='right'>Count</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{rowsPerYear.items.map((row) => (
-						<Row row={row} />
-					))}
-				</TableBody>
-			</Table>
-		</TableContainer>
-	);
-}
-
-function Row({ row }: { row: MeteoritesByYear }) {
+export default function SubRow({ row }: { row: MeteoritesByYear }) {
 	const [open, setOpen] = React.useState(false);
 
 	return (
@@ -64,7 +28,6 @@ function Row({ row }: { row: MeteoritesByYear }) {
 						{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 					</IconButton>
 				</TableCell>
-				<TableCell />
 				<TableCell>{row.year}</TableCell>
 				<TableCell align='right'>{row.totalMass}</TableCell>
 				<TableCell align='right'>{row.meteoritesCount}</TableCell>
