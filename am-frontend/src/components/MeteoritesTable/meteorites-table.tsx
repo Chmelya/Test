@@ -1,5 +1,6 @@
 import {
 	Paper,
+	Stack,
 	Table,
 	TableBody,
 	TableCell,
@@ -7,33 +8,67 @@ import {
 	TableHead,
 	TablePagination,
 	TableRow,
+	TableSortLabel,
+	Toolbar,
+	Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import MeteoritesService from '../../api/services/meteoritesService';
-import SubRow from './subRow';
+import SubRow from './meteorites-table-subRow';
 import { useState } from 'react';
 import type { MeteoriteSearchFilter } from '../../models/requests/meteorites-request';
+import FilterMenu from './meteorites-table-filter-menu';
+import type { SortOrder } from '../../models/requests/requests';
 
 export default function MeteoritesTable() {
-	const [filter, setFilter] = useState<MeteoriteSearchFilter>();
 	const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+	const [filter, setFilter] = useState<MeteoriteSearchFilter>({
+		pageNumber: 1,
+		pageSize: rowsPerPage,
+	});
 
 	const { data: response } = useQuery({
 		queryKey: ['meteorites', 'getMeteoritesPerYear', filter],
 		queryFn: () => MeteoritesService.getMeteoritesPerYear(filter),
 	});
 
+	const [sortOrder, setOrder] = useState<SortOrder>('ASC');
+	const onColumnChange = (columnName: string) => {
+		// if (sortOrder === 'ASC') {
+		// 	setOrder('DESC');
+		// } else {
+		// 	setOrder('ASC');
+		// }
+		//setFilter({ ...filter, sortColumn: columnName, sortOrder });
+	};
+
+	//TODO: Loader
 	if (!response) {
 		return <div>LOAD</div>;
 	}
 
 	return (
 		<TableContainer component={Paper} elevation={5}>
+			<Toolbar>
+				<Stack
+					direction='row'
+					justifyContent='space-between'
+					alignItems='center'
+					width='100%'
+				>
+					<Typography className='' variant='h5'>
+						Meteorites
+					</Typography>
+					<FilterMenu filter={filter} setFilter={setFilter} />
+				</Stack>
+			</Toolbar>
 			<Table aria-label='collapsible table'>
 				<TableHead>
 					<TableRow>
 						<TableCell />
-						<TableCell>Year</TableCell>
+						<TableSortLabel onClick={() => onColumnChange('year')}>
+							<TableCell>Year</TableCell>
+						</TableSortLabel>
 						<TableCell align='right'>Total mass</TableCell>
 						<TableCell align='right'>Count</TableCell>
 					</TableRow>
