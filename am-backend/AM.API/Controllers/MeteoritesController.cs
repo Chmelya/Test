@@ -7,7 +7,7 @@ namespace AM.API.Controllers;
 public class MeteoritesController(IMeteortiesService meteortiesService) : ApiController
 {
     [HttpGet("GroupedByYear")]
-    [ResponseCache(Duration = 3600)]
+    [ResponseCache(Duration = 360, VaryByQueryKeys = new[] { "*" })]
     public async Task<IActionResult> GetMetoritesGroupedList(
         [FromQuery] MeteoritesSearchFilter filter)
     {

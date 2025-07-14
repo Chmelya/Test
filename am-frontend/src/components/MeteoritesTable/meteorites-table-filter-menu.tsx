@@ -52,6 +52,7 @@ const FilterMenu = ({
 			namePart: name || undefined,
 			startYear: fromYear ? parseInt(fromYear) : undefined,
 			endYear: toYear ? parseInt(toYear) : undefined,
+			pageNumber: 1,
 		}));
 		handleClose();
 	};

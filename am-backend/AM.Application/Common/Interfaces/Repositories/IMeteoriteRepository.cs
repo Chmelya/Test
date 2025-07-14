@@ -1,11 +1,11 @@
 ﻿using AM.Application.Common.Filters;
 using AM.Application.Common.Responses;
+using AM.Application.Models.Common;
 using AM.Domain.Enities;
-using X.PagedList;
 
 namespace AM.Application.Common.Interfaces.Repositories;
 
 public interface IMeteoriteRepository : IBaseRepository<Meteorite>
 {
-    Task<IPagedList<MeteoritesGropedResponse>> GetGroupedByYearPagedAsync(MeteoritesSearchFilter filter, bool isAsNoTracking = false);
+    Task<PagedListResponse<MeteoritesGropedResponse>> GetGroupedByYearPagedAsync(MeteoritesSearchFilter filter, bool isAsNoTracking = false);
 }

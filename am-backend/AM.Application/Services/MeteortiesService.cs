@@ -22,9 +22,9 @@ namespace AM.Application.Services
                     .Select(r => new DropdownResponse { Id = r.Id, Value = r.Name})
                     .ToList();
             }
-            catch
+            catch (Exception ex)
             {
-                throw new InvalidOperationException("Error during fetching recclasess");
+                throw new InvalidOperationException("Error during fetching recclasess", ex);
             }
         }
 
@@ -33,16 +33,13 @@ namespace AM.Application.Services
             try
             {
 
-                var list = (await meteoriteRepository
-                    .GetGroupedByYearPagedAsync(filter))
-                    .ToPagedResponse();
-
-                return list;
+                return await meteoriteRepository
+                    .GetGroupedByYearPagedAsync(filter);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException("Error during fetching meteorites");
+                throw new InvalidOperationException("Error during fetching meteorites", ex);
             }
         }
     }

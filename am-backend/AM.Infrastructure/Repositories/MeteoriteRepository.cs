@@ -1,18 +1,16 @@
 ﻿using AM.Application.Common.Filters;
 using AM.Application.Common.Interfaces.Repositories;
 using AM.Application.Common.Responses;
+using AM.Application.Models.Common;
 using AM.Domain.Enities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using X.PagedList;
-using X.PagedList.EF;
-using X.PagedList.Extensions;
 
 namespace AM.Infrastructure.Repositories;
 
 public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<Meteorite>(context), IMeteoriteRepository
 {
-    public async Task<IPagedList<MeteoritesGropedResponse>> GetGroupedByYearPagedAsync(
+    public async Task<PagedListResponse<MeteoritesGropedResponse>> GetGroupedByYearPagedAsync(
         MeteoritesSearchFilter filter,
         bool isAsNoTracking = false)
     {
@@ -20,8 +18,16 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
 
         query = FilterQuery(query, filter);
 
+        var orderSelector = GetOrderSelector(filter.SortColumn);
+
+        query = ApplySort(query, filter.SortOrder, orderSelector);
+
+        var totalCount = await query.CountAsync();
+
         var responseQuery = query
             .Include(m => m.Recclass)
+            .Skip((filter.PageNumber - 1) * filter.PageSize)
+            .Take(filter.PageSize)
             .GroupBy(x => x.Year)
             .Select(g => new MeteoritesGropedResponse()
             {
@@ -32,13 +38,17 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
             });
 
 
-        var orderSelector = GetOrderSelector(filter.SortColumn);
+        var items = await responseQuery.ToListAsync();
 
-        responseQuery = ApplySort(responseQuery, filter.SortOrder, orderSelector);
+        var response = new PagedListResponse<MeteoritesGropedResponse>()
+        {
+            PageNumber = filter.PageNumber,
+            PageCount = (int)Math.Ceiling(totalCount / (double)filter.PageSize),
+            TotalCount = totalCount,
+            Items = items,
+        };
 
-        var pagedList = await responseQuery.ToPagedListAsync(filter.PageNumber, filter.PageSize);
-
-        return pagedList;
+        return response;
     }
 
     private static IQueryable<Meteorite> FilterQuery(IQueryable<Meteorite> query, MeteoritesSearchFilter filter)
@@ -67,21 +77,21 @@ public class MeteoriteRepository(ApplicationDbContext context) : BaseRepository<
     }
 
 
-    private static Expression<Func<MeteoritesGropedResponse, object>> GetOrderSelector(string? sortColumn)
+    private static Expression<Func<Meteorite, object>> GetOrderSelector(string? sortColumn)
     {
         var propertyName = string.IsNullOrEmpty(sortColumn)
-            ? nameof(MeteoritesGropedResponse.Year)
+            ? nameof(Meteorite.Year)
             : sortColumn;
 
-        var param = Expression.Parameter(typeof(MeteoritesGropedResponse));
-        return Expression.Lambda<Func<MeteoritesGropedResponse, object>>(
+        var param = Expression.Parameter(typeof(Meteorite));
+        return Expression.Lambda<Func<Meteorite, object>>(
             Expression.Convert(Expression.Property(param, propertyName), typeof(object)),
             param);
     }
 
-    private static IQueryable<MeteoritesGropedResponse> ApplySort(
-        IQueryable<MeteoritesGropedResponse> query, string? sortOrder,
-        Expression<Func<MeteoritesGropedResponse, object>> orderSelector)
+    private static IQueryable<Meteorite> ApplySort(
+        IQueryable<Meteorite> query, string? sortOrder,
+        Expression<Func<Meteorite, object>> orderSelector)
     {
         return (sortOrder?.ToUpperInvariant() ?? "ASC") == "DESC"
             ? query.OrderByDescending(orderSelector)

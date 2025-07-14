@@ -15,7 +15,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import MeteoritesService from '../../api/services/meteoritesService';
 import SubRow from './meteorites-table-subRow';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { MeteoriteSearchFilter } from '../../models/requests/meteorites-request';
 import FilterMenu from './meteorites-table-filter-menu';
 import type { SortOrder } from '../../models/requests/requests';
@@ -32,7 +32,7 @@ export default function MeteoritesTable() {
 		queryFn: () => MeteoritesService.getMeteoritesPerYear(filter),
 	});
 
-	const [sortOrder, setOrder] = useState<SortOrder>('ASC');
+	//const [sortOrder, setOrder] = useState<SortOrder>('ASC');
 	const onColumnChange = (columnName: string) => {
 		// if (sortOrder === 'ASC') {
 		// 	setOrder('DESC');
@@ -62,20 +62,37 @@ export default function MeteoritesTable() {
 					<FilterMenu filter={filter} setFilter={setFilter} />
 				</Stack>
 			</Toolbar>
-			<Table aria-label='collapsible table'>
+			<Table aria-label='collapsible table' size='small'>
 				<TableHead>
 					<TableRow>
-						<TableCell />
-						<TableSortLabel onClick={() => onColumnChange('year')}>
-							<TableCell>Year</TableCell>
-						</TableSortLabel>
-						<TableCell align='right'>Total mass</TableCell>
-						<TableCell align='right'>Count</TableCell>
+						<TableCell>Name</TableCell>
+						<TableCell>Status</TableCell>
+						<TableCell>Recclass</TableCell>
+						<TableCell>Mass</TableCell>
+						<TableCell>Reclat</TableCell>
+						<TableCell>Reclong</TableCell>
 					</TableRow>
 				</TableHead>
 				<TableBody>
 					{response.items.map((row) => (
-						<SubRow row={row} />
+						<React.Fragment>
+							<TableRow sx={{ bgcolor: 'gray' }}>
+								<TableCell colSpan={2}>Year: {row.year}</TableCell>
+								<TableCell></TableCell>
+								<TableCell colSpan={2}>Total mass: {row.totalMass}</TableCell>
+								<TableCell>Count: {row.meteoritesCount}</TableCell>
+							</TableRow>
+							{row.meteorites.map((meteorite) => (
+								<TableRow>
+									<TableCell>{meteorite.name}</TableCell>
+									<TableCell>{meteorite.fall}</TableCell>
+									<TableCell>{meteorite.recclass.name}</TableCell>
+									<TableCell>{meteorite.mass}</TableCell>
+									<TableCell>{meteorite.reclat}</TableCell>
+									<TableCell>{meteorite.reclong}</TableCell>
+								</TableRow>
+							))}
+						</React.Fragment>
 					))}
 				</TableBody>
 			</Table>
@@ -84,7 +101,7 @@ export default function MeteoritesTable() {
 				page={response.pageNumber - 1}
 				count={response.totalCount}
 				rowsPerPage={rowsPerPage}
-				onPageChange={(event, value) => {
+				onPageChange={(_event, value) => {
 					setFilter({
 						...filter,
 						pageNumber: value + 1,

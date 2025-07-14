@@ -8,6 +8,7 @@ namespace AM.Application.Common.Interfaces.Services
     public interface IMeteortiesService
     {
         Task<ErrorOr<PagedListResponse<MeteoritesGropedResponse>>> GetMeteoritesGrouped(MeteoritesSearchFilter filter);
+
         Task<ErrorOr<List<DropdownResponse>>> GetRecclasses();
     }
 }

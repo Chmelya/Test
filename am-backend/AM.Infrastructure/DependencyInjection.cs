@@ -27,7 +27,7 @@ public static class DependencyInjection
             options.UseMemoryCacheProvider()
                    .UseCacheKeyPrefix("EF_");
 
-            options.CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30));
+            options.CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(5));
         });
     }
 }
