@@ -43,12 +43,21 @@ services:
     ports:
       - '4300:4300'
     environment:
-      - ASPNETCORE_URLS=http://+:4200
+      - ASPNETCORE_URLS=http://+:4300
       - ConnectionStrings__DefaultConnection=Server=sqlserver, 1433;Database=homely;User Id=SA;Password=${SQL_PASSWORD};TrustServerCertificate=true;Integrated Security=false;
       - JobsSettings__MeteoritesDatasetUrl=https://raw.githubusercontent.com/biggiko/nasa-dataset/refs/heads/main/y77d-th95.json
       - JobsSettings__MeteoritesFetchInSeconds=3600
     depends_on:
       sqlserver:
         condition: service_healthy
+  frontend:
+    build:
+      context: ./am-frontend
+      args:
+        - VITE_API_URL=${API_URL}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
 volumes:
   sqlserver-data:
