@@ -20,6 +20,9 @@ internal class MetoritesConfiguration : IEntityTypeConfiguration<Meteorite>
             .HasIndex(m => m.Name);
 
         builder
+            .HasIndex(m => m.Mass);
+
+        builder
             .HasOne(m => m.Geolocation)
             .WithOne(g => g.Meteorite)
             .HasForeignKey<Geolocation>(g => g.MeteoriteId);
