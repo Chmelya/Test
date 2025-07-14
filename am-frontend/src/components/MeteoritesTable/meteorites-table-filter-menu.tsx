@@ -26,8 +26,8 @@ const FilterMenu = ({
 }: {
 	filter: MeteoriteSearchFilter;
 	setFilter: React.Dispatch<React.SetStateAction<MeteoriteSearchFilter>>;
-	setOrderBy: React.Dispatch<React.SetStateAction<SortOrder | undefined>>;
-	setSortOrder: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setOrderBy: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setSortOrder: React.Dispatch<React.SetStateAction<SortOrder | undefined>>;
 }) => {
 	const [recclass, setRecclass] = useState<string>(
 		filter.recclass?.toString() || '0'

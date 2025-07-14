@@ -1,5 +1,6 @@
 ﻿using AM.Application;
 using AM.Infrastructure;
+using AM.API.Extensions.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 namespace AM.API.Setup;
@@ -40,6 +41,8 @@ internal static class ApiConfigurator
     public static WebApplication PiplineSetup(this WebApplication app)
     {
         app.EnsureDbMigration();
+
+        app.AddExceptionHandler();
 
         app.UseResponseCaching();
 

@@ -1,0 +1,28 @@
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+COPY . .
+EXPOSE 4300
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+COPY --from=base app/src/ .
+COPY --from=base ["app/Directory.Build.props", "."]
+COPY --from=base ["app/Directory.Packages.props", "."]
+
+RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
+    dotnet restore "Jobs/AM.JobScheduler/AM.JobScheduler.csproj"
+
+RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
+    --mount=type=cache,target=/src/bin \
+    --mount=type=cache,target=/src/obj \
+    dotnet publish "Jobs/AM.JobScheduler/AM.JobScheduler.csproj" \
+    --no-restore \
+    -c $BUILD_CONFIGURATION \
+    -o /app/publish \
+    /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build app/publish/ .
+ENTRYPOINT ["dotnet", "AM.JobScheduler.dll"]
+

@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-// TODO: config
 const apiClient = axios.create({
-	baseURL: 'https://localhost:7196/api',
+	baseURL: import.meta.env.VITE_API_URL,
 });
 
 export default apiClient;

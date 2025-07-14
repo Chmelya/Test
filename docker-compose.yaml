@@ -7,7 +7,7 @@ services:
       - MSSQL_SA_PASSWORD=${SQL_PASSWORD}
       - MSSQL_DATABASE=${SQL_DB_NAME}
     ports:
-      - '4000:1433'
+      - '1433:1433'
     volumes:
       - sqlserver-data:/var/opt/mssql
     healthcheck:
@@ -19,5 +19,36 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  backend:
+    build:
+      context: ./am-backend
+      dockerfile: dockerfile
+      args:
+        - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+    ports:
+      - '4200:4200'
+    environment:
+      - ASPNETCORE_URLS=http://+:4200
+      - ConnectionStrings__DefaultConnection=Server=sqlserver, 1433;Database=homely;User Id=SA;Password=${SQL_PASSWORD};TrustServerCertificate=true;Integrated Security=false;
+      - CORS__FrontendUrl=http://localhost:3000
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+  jobs:
+    build:
+      context: ./am-backend
+      dockerfile: dockerfileJobs
+      args:
+        - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+    ports:
+      - '4300:4300'
+    environment:
+      - ASPNETCORE_URLS=http://+:4200
+      - ConnectionStrings__DefaultConnection=Server=sqlserver, 1433;Database=homely;User Id=SA;Password=${SQL_PASSWORD};TrustServerCertificate=true;Integrated Security=false;
+      - JobsSettings__MeteoritesDatasetUrl=https://raw.githubusercontent.com/biggiko/nasa-dataset/refs/heads/main/y77d-th95.json
+      - JobsSettings__MeteoritesFetchInSeconds=3600
+    depends_on:
+      sqlserver:
+        condition: service_healthy
 volumes:
   sqlserver-data:
