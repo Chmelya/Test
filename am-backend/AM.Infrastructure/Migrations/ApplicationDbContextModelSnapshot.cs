@@ -82,13 +82,11 @@ namespace AM.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Mass");
-
                     b.HasIndex("Name");
 
                     b.HasIndex("RecclassId");
 
-                    b.HasIndex("Year");
+                    b.HasIndex("Year", "RecclassId");
 
                     b.ToTable("Meteorites");
                 });

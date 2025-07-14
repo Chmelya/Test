@@ -5,7 +5,7 @@
 namespace AM.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitalCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,9 +86,9 @@ namespace AM.Infrastructure.Migrations
                 column: "RecclassId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meteorites_Year",
+                name: "IX_Meteorites_Year_RecclassId",
                 table: "Meteorites",
-                column: "Year");
+                columns: new[] { "Year", "RecclassId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Recclass_Name",

@@ -3,6 +3,7 @@ import {
 	Button,
 	FormControl,
 	IconButton,
+	InputLabel,
 	Menu,
 	MenuItem,
 	Select,
@@ -15,13 +16,18 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import type { MeteoriteSearchFilter } from '../../models/requests/meteorites-request';
 import MeteoritesService from '../../api/services/meteoritesService';
 import { useQuery } from '@tanstack/react-query';
+import type { SortOrder } from '../../models/requests/requests';
 
 const FilterMenu = ({
 	filter,
 	setFilter,
+	setOrderBy,
+	setSortOrder,
 }: {
 	filter: MeteoriteSearchFilter;
 	setFilter: React.Dispatch<React.SetStateAction<MeteoriteSearchFilter>>;
+	setOrderBy: React.Dispatch<React.SetStateAction<SortOrder | undefined>>;
+	setSortOrder: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
 	const [recclass, setRecclass] = useState<string>(
 		filter.recclass?.toString() || '0'
@@ -53,7 +59,13 @@ const FilterMenu = ({
 			startYear: fromYear ? parseInt(fromYear) : undefined,
 			endYear: toYear ? parseInt(toYear) : undefined,
 			pageNumber: 1,
+			sortOrder: undefined,
+			sortColumn: undefined,
 		}));
+
+		setOrderBy(undefined);
+		setSortOrder(undefined);
+
 		handleClose();
 	};
 
@@ -68,7 +80,13 @@ const FilterMenu = ({
 			namePart: undefined,
 			startYear: undefined,
 			endYear: undefined,
+			sortOrder: undefined,
+			sortColumn: undefined,
 		}));
+
+		setOrderBy(undefined);
+		setSortOrder(undefined);
+
 		handleClose();
 	};
 
@@ -93,9 +111,10 @@ const FilterMenu = ({
 				<Box sx={{ padding: 2 }}>
 					<FormControl fullWidth>
 						<Stack direction='column' gap={2}>
+							<InputLabel id='recclass-select-label-id'>Recclass</InputLabel>
 							<Select
 								labelId='recclass-select-label'
-								id='recclass-select-ID'
+								id='recclass-select-Id'
 								value={recclass}
 								label='Recclass'
 								onChange={(event) => setRecclass(event.target.value.toString())}

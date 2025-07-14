@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AM.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250714104932_AddMassIndex")]
-    partial class AddMassIndex
+    [Migration("20250714151642_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -85,13 +85,11 @@ namespace AM.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Mass");
-
                     b.HasIndex("Name");
 
                     b.HasIndex("RecclassId");
 
-                    b.HasIndex("Year");
+                    b.HasIndex("Year", "RecclassId");
 
                     b.ToTable("Meteorites");
                 });

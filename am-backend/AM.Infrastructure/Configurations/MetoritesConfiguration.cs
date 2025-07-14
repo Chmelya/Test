@@ -14,18 +14,17 @@ internal class MetoritesConfiguration : IEntityTypeConfiguration<Meteorite>
             .ValueGeneratedNever();
 
         builder
-            .HasIndex(m => m.Year);
+            .HasIndex(m => new { m.Year, m.RecclassId });
+
+        builder
+            .HasIndex(m => m.RecclassId);
 
         builder
             .HasIndex(m => m.Name);
 
         builder
-            .HasIndex(m => m.Mass);
-
-        builder
             .HasOne(m => m.Geolocation)
             .WithOne(g => g.Meteorite)
             .HasForeignKey<Geolocation>(g => g.MeteoriteId);
-
     }
 }

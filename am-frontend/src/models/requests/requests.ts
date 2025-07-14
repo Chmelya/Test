@@ -1,4 +1,4 @@
-export type SortOrder = 'ASC' | 'DESC';
+export type SortOrder = 'asc' | 'desc';
 
 export interface SortRequestParams {
 	sortColumn?: string;
