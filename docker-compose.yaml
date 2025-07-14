@@ -7,7 +7,7 @@ services:
       - MSSQL_SA_PASSWORD=${SQL_PASSWORD}
       - MSSQL_DATABASE=${SQL_DB_NAME}
     ports:
-      - '1433:1433'
+      - '4000:1433'
     volumes:
       - sqlserver-data:/var/opt/mssql
     healthcheck:
@@ -50,6 +50,8 @@ services:
     depends_on:
       sqlserver:
         condition: service_healthy
+      backend:
+        condition: service_started
   frontend:
     build:
       context: ./am-frontend

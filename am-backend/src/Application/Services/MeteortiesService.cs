@@ -2,15 +2,16 @@
 using AM.Application.Common.Interfaces.Repositories;
 using AM.Application.Common.Interfaces.Services;
 using AM.Application.Common.Responses;
-using AM.Application.Extensions.PagedList;
 using AM.Application.Models.Common;
 using ErrorOr;
+using FluentValidation;
 
 namespace AM.Application.Services
 {
     public class MeteortiesService(
         IMeteoriteRepository meteoriteRepository,
-        IRecclassRepository recclassRepository
+        IRecclassRepository recclassRepository,
+        IValidator<MeteoritesSearchFilter> meteoritesSearchFilterValidator
         ) : IMeteortiesService
     {
         public async Task<ErrorOr<List<DropdownResponse>>> GetRecclasses()
@@ -30,9 +31,16 @@ namespace AM.Application.Services
 
         public async Task<ErrorOr<PagedListResponse<MeteoritesGropedResponse>>> GetMeteoritesGrouped(MeteoritesSearchFilter filter)
         {
+            var validationResult = meteoritesSearchFilterValidator.Validate(filter);
+
+            if (!validationResult.IsValid)
+            {
+                //TODO: Show all together 
+                return Error.Validation(description: validationResult.Errors.FirstOrDefault()!.ErrorMessage);
+            }
+
             try
             {
-
                 return await meteoriteRepository
                     .GetGroupedByYearPagedAsync(filter);
 

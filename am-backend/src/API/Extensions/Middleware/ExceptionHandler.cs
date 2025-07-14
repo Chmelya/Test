@@ -18,7 +18,7 @@ internal static class ExceptionHandler
                 var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                 if (contextFeature != null)
                 {
-                    string message = "Internal server error";
+                    string message = contextFeature.Error.Message;
                     await context.Response.WriteAsync(
                         JsonConvert.SerializeObject(new { context.Response.StatusCode, message })
                     );
